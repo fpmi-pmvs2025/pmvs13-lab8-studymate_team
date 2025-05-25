@@ -12,6 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Studymate"
         tools:targetApi="31">
+        <activity android:name=".ui.ScheduleActivity"/>
+        <activity android:name=".ui.LoginActivity" android:exported="true"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">
