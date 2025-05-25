@@ -16,12 +16,12 @@ studymate/
 │   │   ├── main/
 │   │   │   ├── java/
 │   │   │   │   └── com/
-│   │   │   │       └── studymate/
-│   │   │   │           ├── activities/
-│   │   │   │           ├── adapters/
-│   │   │   │           ├── models/
-│   │   │   │           ├── services/
-│   │   │   │           └── utils/
+│   │   │   │       └── bsu/
+│   │   │   │           └── studymate/
+│   │   │   │               ├── ui/
+│   │   │   │               ├── db/
+│   │   │   │               ├── data/
+│   │   │   │               └── MainActivity.kt
 │   │   │   ├── res/
 │   │   │   │   ├── layout/
 │   │   │   │   ├── values/
@@ -41,38 +41,28 @@ studymate/
 
 ## Описание компонентов
 
-### Java пакеты (java/com/studymate/)
-- **activities/** - активности Android
-  - MainActivity.java - главная активность
-  - ScheduleActivity.java - активность расписания
-  - MaterialsActivity.java - активность материалов
-  - ProfileActivity.java - активность профиля
+### Kotlin пакеты (java/com/bsu/studymate/)
+- **ui/** - компоненты пользовательского интерфейса
+  - Экранные компоненты
+  - Навигация
+  - UI утилиты
 
-- **adapters/** - адаптеры для RecyclerView
-  - ScheduleAdapter.java - адаптер для списка расписания
-  - MaterialsAdapter.java - адаптер для списка материалов
+- **db/** - работа с базой данных
+  - Room база данных
+  - DAO интерфейсы
+  - Сущности
 
-- **models/** - модели данных
-  - User.java - модель пользователя
-  - Schedule.java - модель расписания
-  - Material.java - модель материала
-  - Subject.java - модель предмета
+- **data/** - модели данных и репозитории
+  - Модели данных
+  - Репозитории
+  - API клиенты
 
-- **services/** - сервисы
-  - ApiService.java - работа с API
-  - AuthService.java - аутентификация
-  - NotificationService.java - уведомления
-
-- **utils/** - утилиты
-  - Constants.java - константы
-  - Helpers.java - вспомогательные функции
+- **MainActivity.kt** - главная активность приложения
 
 ### Ресурсы (res/)
 - **layout/** - XML файлы разметки
   - activity_main.xml
-  - activity_schedule.xml
-  - activity_materials.xml
-  - activity_profile.xml
+  - Другие экраны приложения
 
 - **values/** - ресурсы значений
   - colors.xml - цвета

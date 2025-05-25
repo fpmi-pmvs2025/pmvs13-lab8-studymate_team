@@ -9,91 +9,80 @@ nav_order: 5
 
 ## ER-диаграмма
 
+```mermaid
+erDiagram
+    Users {
+        int id PK
+        string email UK
+        string password
+        string firstname
+        string lastname
+        int group_no
+    }
+    Schedule {
+        int id PK
+        string day
+        int group_no
+        string subject
+        string time
+        string room
+    }
 ```
-[Users]
-- id (PK)
-- email
-- password
-- full_name
-- group
-- created_at
-- updated_at
 
-[Schedule]
-- id (PK)
-- subject_id (FK)
-- teacher_id (FK)
-- group_id (FK)
-- day_of_week
-- start_time
-- end_time
-- room
-- created_at
-- updated_at
+## Описание таблиц
 
-[Subjects]
-- id (PK)
-- name
-- description
-- created_at
-- updated_at
+### Users
+Таблица для хранения информации о пользователях.
 
-[Materials]
-- id (PK)
-- subject_id (FK)
-- user_id (FK)
-- title
-- description
-- file_path
-- file_type
-- created_at
-- updated_at
+| Поле | Тип | Описание |
+|------|-----|----------|
+| id | INTEGER | Первичный ключ, автоинкремент |
+| email | TEXT | Email пользователя (уникальный) |
+| password | TEXT | Пароль пользователя |
+| firstname | TEXT | Имя пользователя |
+| lastname | TEXT | Фамилия пользователя |
+| group_no | INTEGER | Номер группы пользователя |
 
-[Groups]
-- id (PK)
-- name
-- faculty
-- created_at
-- updated_at
+### Schedule
+Таблица для хранения расписания занятий.
 
-[Teachers]
-- id (PK)
-- full_name
-- email
-- department
-- created_at
-- updated_at
-```
+| Поле | Тип | Описание |
+|------|-----|----------|
+| id | INTEGER | Первичный ключ, автоинкремент |
+| day | TEXT | День недели |
+| group_no | INTEGER | Номер группы |
+| subject | TEXT | Название предмета |
+| time | TEXT | Время занятия |
+| room | TEXT | Номер аудитории |
 
 ## Связи между таблицами
 
-- Users -> Groups (Many-to-One)
-- Schedule -> Subjects (Many-to-One)
-- Schedule -> Teachers (Many-to-One)
-- Schedule -> Groups (Many-to-One)
-- Materials -> Subjects (Many-to-One)
-- Materials -> Users (Many-to-One)
+- Users.group_no -> Schedule.group_no (Many-to-One)
+  - Одна группа может иметь много записей в расписании
+  - Один пользователь принадлежит к одной группе
+
+## Примеры данных
+
+### Users
+```sql
+INSERT INTO Users (email, password, firstname, lastname, group_no)
+VALUES 
+    ('ivanov@bsu.by', '1111', 'Иван', 'Иванов', 1),
+    ('petrova@bsu.by', '2222', 'Анна', 'Петрова', 2),
+    ('smith@bsu.by', '3333', 'John', 'Smith', 3),
+    ('lee@bsu.by', '4444', 'Min', 'Lee', 4);
+```
+
+### Schedule
+```sql
+INSERT INTO Schedule (day, group_no, subject, time, room)
+VALUES 
+    ('Понедельник', 1, 'Математика', '09:00', '101'),
+    ('Понедельник', 1, 'Физика', '10:45', '202'),
+    ('Вторник', 2, 'Программирование', '09:00', '303'),
+    ('Вторник', 2, 'Базы данных', '10:45', '404');
+```
 
 ## SQL-файл
 
-Полная схема базы данных доступна в файле: [database/schema.sql](https://github.com/your-username/studymate/blob/main/database/schema.sql)
-
-## Основные таблицы и их назначение
-
-### Users
-Хранит информацию о пользователях системы (студентах)
-
-### Schedule
-Содержит расписание занятий
-
-### Subjects
-Список учебных предметов
-
-### Materials
-Учебные материалы, загруженные пользователями
-
-### Groups
-Учебные группы
-
-### Teachers
-Информация о преподавателях 
+Полная схема базы данных доступна в файле: [app/src/main/java/com/bsu/studymate/db/db.sql](https://github.com/fpmi-pmvs2025/pmvs13-lab8-studymate_team/tree/main/app/src/main/java/com/bsu/studymate/db/db.sql)
