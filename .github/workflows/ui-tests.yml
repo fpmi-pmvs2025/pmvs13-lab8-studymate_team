@@ -36,7 +36,7 @@ jobs:
         api-level: 27
         target: google_apis
         arch: x86
-        profile: Pixel_2
+        profile: Nexus 6
         script: |
           echo "Starting ADB server..."
           adb kill-server
