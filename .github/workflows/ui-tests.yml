@@ -38,17 +38,35 @@ jobs:
         arch: x86_64
         profile: Nexus 6
         script: |
+          echo "Starting ADB server..."
+          adb kill-server
+          adb start-server
+          adb devices
+          
           echo "Starting emulator..."
           adb devices
           echo "Waiting for emulator to boot..."
           adb wait-for-device
           echo "Checking boot status..."
-          timeout 150 bash -c 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
-          echo "Emulator booted successfully"
+          
+          # Wait for boot completion with increased timeout
+          timeout 300 bash -c '
+            while true; do
+              if adb shell getprop sys.boot_completed | grep -q "1"; then
+                echo "Emulator booted successfully"
+                break
+              fi
+              echo "Waiting for emulator to boot..."
+              sleep 5
+            done
+          '
+          
+          echo "Running tests..."
           ./gradlew connectedAndroidTest
           echo "Tests completed"
           adb devices
           adb logcat -d
       env:
         ANDROID_EMULATOR_HEADLESS: 1
-        ANDROID_EMULATOR_QUICK_BOOT: 1 
+        ANDROID_EMULATOR_QUICK_BOOT: 1
+        ANDROID_EMULATOR_USE_SYSTEM_LIBS: 1 
