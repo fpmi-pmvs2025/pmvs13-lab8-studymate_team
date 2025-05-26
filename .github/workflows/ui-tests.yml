@@ -50,13 +50,15 @@ jobs:
           echo "Checking boot status..."
           
           # Wait for boot completion
-          for i in {1..60}; do
+          i=1
+          while [ $i -le 60 ]; do
             if adb shell getprop sys.boot_completed | grep -q "1"; then
               echo "Emulator booted successfully"
               break
             fi
             echo "Waiting for emulator to boot... ($i/60)"
             sleep 5
+            i=$((i + 1))
           done
           
           # Optimize emulator settings
