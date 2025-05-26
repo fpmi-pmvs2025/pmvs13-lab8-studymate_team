@@ -25,19 +25,30 @@ jobs:
     - name: Accept Android Licenses
       run: |
         yes | sdkmanager --licenses
-        sdkmanager "platform-tools" "platforms;android-29" "build-tools;29.0.3" "system-images;android-29;google_apis;x86_64"
+        sdkmanager "platform-tools" "platforms;android-28" "build-tools;28.0.3" "system-images;android-28;google_apis;x86_64"
     
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     
     - name: Run UI Tests
-      uses: malinskiy/action-android@master
+      uses: reactivecircus/android-emulator-runner@v2
       with:
-        cmd: ./gradlew connectedAndroidTest
         api-level: 28
         target: google_apis
         arch: x86_64
         profile: Nexus 6
+        script: |
+          echo "Starting emulator..."
+          adb devices
+          echo "Waiting for emulator to boot..."
+          adb wait-for-device
+          echo "Checking boot status..."
+          timeout 150 bash -c 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
+          echo "Emulator booted successfully"
+          ./gradlew connectedAndroidTest
+          echo "Tests completed"
+          adb devices
+          adb logcat -d
       env:
         ANDROID_EMULATOR_HEADLESS: 1
-        ANDROID_EMULATOR_QUICK_BOOT: 1
+        ANDROID_EMULATOR_QUICK_BOOT: 1 
