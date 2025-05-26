@@ -25,7 +25,7 @@ jobs:
     - name: Accept Android Licenses
       run: |
         yes | sdkmanager --licenses
-        sdkmanager "platform-tools" "platforms;android-28" "build-tools;28.0.3" "system-images;android-28;google_apis;x86_64"
+        sdkmanager "platform-tools" "platforms;android-27" "build-tools;27.0.3" "system-images;android-27;google_apis;x86"
     
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
@@ -33,10 +33,10 @@ jobs:
     - name: Run UI Tests
       uses: reactivecircus/android-emulator-runner@v2
       with:
-        api-level: 28
+        api-level: 27
         target: google_apis
-        arch: x86_64
-        profile: Nexus 6
+        arch: x86
+        profile: Pixel_2
         script: |
           echo "Starting ADB server..."
           adb kill-server
@@ -49,20 +49,24 @@ jobs:
           adb wait-for-device
           echo "Checking boot status..."
           
-          # Wait for boot completion with increased timeout
-          timeout 300 bash -c '
-            while true; do
-              if adb shell getprop sys.boot_completed | grep -q "1"; then
-                echo "Emulator booted successfully"
-                break
-              fi
-              echo "Waiting for emulator to boot..."
-              sleep 5
-            done
-          '
+          # Wait for boot completion
+          for i in {1..60}; do
+            if adb shell getprop sys.boot_completed | grep -q "1"; then
+              echo "Emulator booted successfully"
+              break
+            fi
+            echo "Waiting for emulator to boot... ($i/60)"
+            sleep 5
+          done
+          
+          # Optimize emulator settings
+          adb shell settings put global window_animation_scale 0
+          adb shell settings put global transition_animation_scale 0
+          adb shell settings put global animator_duration_scale 0
+          adb shell settings put global always_finish_activities 1
           
           echo "Running tests..."
-          ./gradlew connectedAndroidTest
+          ./gradlew connectedAndroidTest --max-workers=2 --parallel
           echo "Tests completed"
           adb devices
           adb logcat -d
@@ -70,4 +74,5 @@ jobs:
         ANDROID_EMULATOR_HEADLESS: 1
         ANDROID_EMULATOR_QUICK_BOOT: 1
         ANDROID_EMULATOR_USE_SYSTEM_LIBS: 1
-        ANDROID_EMULATOR_USE_ACCELERATION: 1 
+        ANDROID_EMULATOR_USE_ACCELERATION: 1
+        ANDROID_EMULATOR_DISABLE_ANIMATIONS: 1 
